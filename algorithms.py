@@ -30,7 +30,18 @@ def grad_descent(step_fn, env):
     
     """
     # Question ONE
-    pass
+    res=[]
+    curr= env.current_position()
+    res.append(curr)
+
+    while  env.status() == Environment.ACTIVELY_SEARCHING:
+        step = step_fn(curr)
+        curr = curr+step
+        env.step_to(curr)
+        res.append(curr)
+
+    return res
+
 
 
 def momentum_grad_descent(rate, env):
@@ -55,12 +66,19 @@ class MomentumStepFunction:
         
     """    
     def __init__(self, loss_gradient, learning_rate, momentum_rate):
-        # Question TWO
-        pass
+        self.loss_gradient= loss_gradient
+        self.learning_rate=learning_rate
+        self.momentum_rate=momentum_rate
+        self.previous=torch.zeros(2)
         
     def __call__(self, pos):
-        # Question TWO
-        pass
+        gradient = self.loss_gradient(pos)
+        # step
+        step = (-self.learning_rate* gradient)+(self.momentum_rate * self.previous)
+        self.previous = step
+
+        return step
+
 
 
 def adagrad(rate, env):
